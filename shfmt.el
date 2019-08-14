@@ -39,7 +39,7 @@
   "Check that ARG is a list of strings."
   (seq-every-p #'stringp arg))
 
-(defun shfmt-build-argument-list ()
+(defun shfmt--build-argument-list ()
   "Build args list based on `shfmt-arguments' and user settings."
   (let ((indent (when (boundp 'sh-basic-offset)
                   `("-i" ,(number-to-string sh-basic-offset)))))
@@ -50,7 +50,7 @@
 ;;;###autoload (autoload 'shfmt-on-save-mode "current-file" nil t)
 (reformatter-define shfmt
   :program shfmt-executable
-  :args (shfmt-build-argument-list)
+  :args (shfmt--build-argument-list)
   :lighter " shfmt"
   :group 'shfmt)
 
