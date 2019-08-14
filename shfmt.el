@@ -14,23 +14,36 @@
 
 ;;; Code:
 
-(defcustom shfmt-executable "shfmt" "The executable to run when autoformatting."
-  :group 'shfmt
-  :type '(string))
+(defgroup shfmt nil
+  "Auto-formatting for shell scripts"
+  :group 'languages
+  :prefix "shfmt-"
+  :link '(url-link :tag "Site" "https://github.com/amake/shfmt.el")
+  :link '(url-link :tag "Repository" "https://github.com/amake/shfmt.el.git"))
 
-(defcustom shfmt-arguments "" "The args to supply to `shfmt-executable' when autoformatting."
+(defcustom shfmt-executable "shfmt"
+  "The executable to run when autoformatting."
   :group 'shfmt
-  :type '(string)
+  :type 'file
   :safe #'stringp)
+
+(defcustom shfmt-arguments nil
+  "The args to supply to `shfmt-executable' when autoformatting."
+  :group 'shfmt
+  :type '(repeat string)
+  :safe #'shfmt--list-of-strings-p)
+
+(defun shfmt--list-of-strings-p (arg)
+  "Check that ARG is a list of strings."
+  (seq-every-p #'stringp arg))
 
 (defvar shfmt--debug nil)
 
 (defun shfmt-build-argument-list ()
-  "Build a list of arguments to `shfmt-executable' based on \
-`shfmt-arguments' and user settings."
+  "Build args list based on `shfmt-arguments' and user settings."
   (let ((indent (when (boundp 'sh-basic-offset)
                   `("-i" ,(number-to-string sh-basic-offset)))))
-    `(,@indent ,@(split-string shfmt-arguments))))
+    `(,@indent ,@shfmt-arguments)))
 
 (defun shfmt-build-command ()
   "Build the command to execute when autoformatting."
