@@ -10,7 +10,7 @@ This is not (yet) on MELPA so install it locally however you like.
 
 Manual formatting requires no configuration; just call `shfmt-buffer` or
 `shfmt-region`. Call `shfmt-enable-on-save` to auto-format on save. Add this to
-the `sh-mode-hook` to enable automatically fin new buffers.
+the `sh-mode-hook` to enable automatically in new buffers.
 
 Call `flycheck-shfmt-setup` to enable the Flycheck checker.
 
