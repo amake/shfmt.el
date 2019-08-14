@@ -1,10 +1,16 @@
 ;;; shfmt.el --- Autoformat shell scripts -*- lexical-binding: t -*-
 
-;; Shell script autoformatting using shfmt; see https://github.com/mvdan/sh
+;; Copyright (C) 2018-2019 Aaron Madlon-Kay
 
-;; Package-Requires: (cl-lib)
+;; Author: Aaron Madlon-Kay
+;; Version: 0.1.0
+;; URL: https://github.com/amake/shfmt.el
+;; Package-Requires: ((emacs "24"))
+;; Keywords: languages
 
 ;;; Commentary:
+
+;; Shell script autoformatting using shfmt; see https://github.com/mvdan/sh
 
 ;;; Code:
 
@@ -53,7 +59,7 @@
          (error-buffer (get-buffer-create error-buffer-name))
          (coding-system-for-write buffer-file-coding-system)
          (coding-system-for-read buffer-file-coding-system)
-         (show-errors (not (flycheck-shfmt-in-use-p))))
+         (show-errors (not (shfmt-flycheck-in-use-p))))
     (if (zerop (shell-command-on-region
                 start end
                 cmd
@@ -83,17 +89,16 @@
   (let* ((patch-buffer-name "*Shfmt Patch*")
          (patch-buffer (get-buffer-create patch-buffer-name))
          (start-line (line-number-at-pos start))
-         (end-line (line-number-at-pos end))
          (call-process-args `(,start ,end ,shfmt-executable ,nil ,patch-buffer ,t ,@args)))
     (with-current-buffer patch-buffer
       (erase-buffer))
     (when (= 1 (apply #'call-process-region call-process-args))
         (save-excursion
-          (shfmt--apply-patch patch-buffer start-line end-line (current-buffer))
+          (shfmt--apply-patch patch-buffer start-line (current-buffer))
           (kill-buffer patch-buffer)))))
 
-(defun shfmt--apply-patch (patch-buffer start-line end-line target-buffer)
-  "Apply patch in PATCH-BUFFER to region from START-LINE to END-LINE in TARGET-BUFFER."
+(defun shfmt--apply-patch (patch-buffer start-line target-buffer)
+  "Apply patch in PATCH-BUFFER to region from START-LINE in TARGET-BUFFER."
   (with-current-buffer patch-buffer
     (goto-char 0)
     (cl-labels ((current-line ()
@@ -141,7 +146,7 @@
   (interactive)
   (shfmt-region (point-min) (point-max)))
 
-(defun flycheck-shfmt-in-use-p ()
+(defun shfmt-flycheck-in-use-p ()
   "Return non-nil if flycheck-shfmt is in use in the current buffer."
   (let ((fun 'flycheck-may-use-checker))
     (when (functionp fun)

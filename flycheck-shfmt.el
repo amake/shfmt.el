@@ -1,10 +1,16 @@
 ;;; flycheck-shfmt.el --- Lint shell scripts -*- lexical-binding: t -*-
 
-;; Shell script linting using shfmt; see https://github.com/mvdan/sh
+;; Copyright (C) 2018-2019 Aaron Madlon-Kay
 
-;; Package-Requires: ((emacs "25.1") (flycheck "0.25"))
+;; Author: Aaron Madlon-Kay
+;; Version: 0.1.0
+;; URL: https://github.com/amake/shfmt.el
+;; Package-Requires: ((emacs "24") (flycheck "0.25"))
+;; Keywords: languages
 
 ;;; Commentary:
+
+;; Shell script linting using shfmt; see https://github.com/mvdan/sh
 
 ;;; Code:
 
