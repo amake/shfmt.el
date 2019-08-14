@@ -14,6 +14,7 @@
 
 ;;; Code:
 
+(require 'shfmt-common)
 (require 'reformatter)
 
 (defgroup shfmt nil
@@ -43,7 +44,7 @@
   "Build args list based on `shfmt-arguments' and user settings."
   (let ((indent (when (boundp 'sh-basic-offset)
                   `("-i" ,(number-to-string sh-basic-offset)))))
-    `(,@indent ,@shfmt-arguments)))
+    `(,@indent ,@shfmt-arguments ,@(shfmt-common-get-parser-opts))))
 
 ;;;###autoload (autoload 'shfmt-buffer "current-file" nil t)
 ;;;###autoload (autoload 'shfmt-region "current-file" nil t)
