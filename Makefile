@@ -1,11 +1,5 @@
 EMACS := emacs
-EMACS_VER = docker run --rm -t \
-	-v $(PWD):/work \
-	-w /work \
-	flycheck/emacs-cask:$1 \
-	emacs
-DEPENDENCIES := flycheck dash
-DEPENDENT_EL := flycheck-shfmt.el
+DEPENDENCIES := flycheck dash reformatter
 FIND_PKG_DIR = $(shell find -L ~/.emacs.d/elpa -type d -regex '.*/$1-[0-9.]*')
 SEARCH_DIRS = $(foreach _,$(DEPENDENCIES),-L $(call FIND_PKG_DIR,$(_)))
 COMPILE_CMD = $(EMACS) -Q -L . $(SEARCH_DIRS) \
@@ -15,23 +9,8 @@ EL_FILES := $(wildcard *.el)
 
 .PHONY: test
 test: ## Run regular test (default Emacs)
-test: test-default
-
-.PHONY: test-ci
-test-ci: ## Run tests for CI (various containerized Emacsen)
-test-ci: DEPENDENCIES :=
-test-ci: EL_FILES := $(filter-out $(DEPENDENT_EL),$(EL_FILES))
-test-ci: test-26 test-25 test-24
-
-.PHONY: test-default test-26 test-25 test-24
-test-default test-26 test-25 test-24: $(EL_FILES)
+test: $(EL_FILES)
 	$(COMPILE_CMD) $(EL_FILES)
-
-test-26: EMACS := $(call EMACS_VER,26.2)
-
-test-25: EMACS := $(call EMACS_VER,25.3)
-
-test-24: EMACS := $(call EMACS_VER,24.5)
 
 .PHONY: clean
 clean: ## Clean files
