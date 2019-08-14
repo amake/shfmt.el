@@ -32,7 +32,8 @@ See URL `https://github.com/mvdan/sh'."
           line-end))
   :modes sh-mode
   :predicate (lambda () (memq sh-shell '(bash sh mksh)))
-  :next-checkers ((warning . sh-shellcheck)))
+  :next-checkers ((warning . sh-bash)
+                  (warning . sh-posix-bash)))
 
 (defun flycheck-shfmt-setup ()
   "Set up the flycheck-shfmt checker."
