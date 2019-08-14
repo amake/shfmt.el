@@ -4,12 +4,14 @@ Shell script formatting and linting with [shfmt](https://github.com/mvdan/sh)
 
 # Installation
 
-This is not (yet) on MELPA so install it locally however you like.
+This is not (yet) on MELPA so install it locally however you like. You will have
+to install [`reformatter`](https://github.com/purcell/reformatter.el) and
+[`flycheck`](https://www.flycheck.org/en/latest/) separately.
 
 # Configuration
 
 Manual formatting requires no configuration; just call `shfmt-buffer` or
-`shfmt-region`. Call `shfmt-enable-on-save` to auto-format on save. Add this to
+`shfmt-region`. Enable `shfmt-on-save-mode` to auto-format on save. Add this to
 the `sh-mode-hook` to enable automatically in new buffers.
 
 Call `flycheck-shfmt-setup` to enable the Flycheck checker.
@@ -24,7 +26,7 @@ installed locally to `lisp/shfmt`:
   :ensure nil
   :load-path "lisp/shfmt"
   :ensure-system-package shfmt
-  :hook (sh-mode . shfmt-enable-on-save))
+  :hook (sh-mode . shfmt-on-save-mode))
 
 (use-package flycheck-shfmt
   :ensure nil
