@@ -5,7 +5,7 @@
 ;; Author: Aaron Madlon-Kay
 ;; Version: 0.1.0
 ;; URL: https://github.com/amake/shfmt.el
-;; Package-Requires: ((emacs "24") (reformatter "0.4"))
+;; Package-Requires: ((emacs "25.1") (reformatter "0.4"))
 ;; Keywords: languages
 
 ;;; Commentary:
