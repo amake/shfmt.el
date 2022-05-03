@@ -1,31 +1,51 @@
-EMACS := emacs
-DEPENDENCIES := flycheck dash reformatter
-FIND_PKG_DIR = $(shell find -L ~/.emacs.d/elpa -type d -regex '.*/$1-[0-9.]*')
-SEARCH_DIRS = $(foreach _,$(DEPENDENCIES),-L $(call FIND_PKG_DIR,$(_)))
-COMPILE_CMD = $(EMACS) -Q -L . $(SEARCH_DIRS) \
-	--eval '(setq byte-compile-error-on-warn t)' \
-	-batch -f batch-byte-compile
-EL_FILES := $(wildcard *.el)
+# Run an arbitrary Emacs version like
+#   make test emacs="docker run --rm -it -v $PWD:/work -w /work silex/emacs:26 emacs"
+emacs := emacs
+dependencies := flycheck reformatter
+run_emacs = $(emacs) -Q -L . -L $(elpa_dir) -l package \
+	--eval "(setq package-user-dir (expand-file-name \"$(elpa_dir)\"))" \
+	--eval "(add-to-list 'package-archives '(\"melpa\" . \"https://melpa.org/packages/\") t)" \
+	--eval "(package-initialize)"
+elpa_dir := elpa
 
 .PHONY: test
-test: ## Run regular test (default Emacs)
-test: $(EL_FILES)
-	$(COMPILE_CMD) $(EL_FILES)
+test: ## Compile and run unit tests
+test: test-compile
+
+$(elpa_dir):
+	$(run_emacs) \
+		--eval "(unless (seq-every-p (lambda (e) (require e nil t)) '($(dependencies))) \
+			(package-refresh-contents) (mapc #'package-install '($(dependencies))))" \
+		--batch
+
+.PHONY: deps
+deps: $(elpa_dir)
+
+.PHONY: test-compile
+test-compile: | $(elpa_dir)
+	$(run_emacs) \
+		--eval '(setq byte-compile-error-on-warn t)' \
+		--batch -f batch-byte-compile *.el
 
 .PHONY: clean
 clean: ## Clean files
-	rm *.elc
+	rm -f *.elc
+
+.PHONY: clobber
+clobber: ## Remove all generated files
+clobber: clean
+	rm -rf $(elpa_dir)
 
 # Hooks
 
-HOOKS := $(filter-out %~,$(wildcard hooks/*))
-GIT_DIR := $(shell git rev-parse --git-dir)
+hooks := $(filter-out %~,$(wildcard hooks/*))
+git_dir := $(shell git rev-parse --git-dir)
 
 .PHONY: hooks
 hooks: ## Install helpful git hooks
-hooks: $(foreach _,$(HOOKS),$(GIT_DIR)/hooks/$(notdir $(_)))
+hooks: $(foreach _,$(hooks),$(git_dir)/hooks/$(notdir $(_)))
 
-$(GIT_DIR)/hooks/%: hooks/%
+$(git_dir)/hooks/%: hooks/%
 	ln -s $(PWD)/$(<) $(@)
 
 .PHONY: help
