@@ -4,7 +4,9 @@ Shell script formatting and linting with [shfmt](https://github.com/mvdan/sh)
 
 # Installation
 
-This is not (yet) on MELPA so install it locally however you like. You will have
+Install shfmt [per instructions](https://github.com/mvdan/sh#shfmt).
+
+shfmt.el is not (yet) on MELPA so install it locally however you like. You will have
 to install [`reformatter`](https://github.com/purcell/reformatter.el) and
 [`flycheck`](https://www.flycheck.org/en/latest/) separately.
 
