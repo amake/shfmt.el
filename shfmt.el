@@ -46,9 +46,9 @@
                   `("-i" ,(number-to-string sh-basic-offset)))))
     `(,@indent ,@shfmt-arguments ,@(shfmt-common-get-parser-opts))))
 
-;;;###autoload (autoload 'shfmt-buffer "current-file" nil t)
-;;;###autoload (autoload 'shfmt-region "current-file" nil t)
-;;;###autoload (autoload 'shfmt-on-save-mode "current-file" nil t)
+;;;###autoload (autoload 'shfmt-buffer "shfmt" nil t)
+;;;###autoload (autoload 'shfmt-region "shfmt" nil t)
+;;;###autoload (autoload 'shfmt-on-save-mode "shfmt" nil t)
 (reformatter-define shfmt
   :program shfmt-executable
   :args (shfmt--build-argument-list)
